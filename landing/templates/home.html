@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بیوگرافی من</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #cccccc;
+            font-family: 'Vazirmatn', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .box {
+            background-color: #252525;
+            border: 1px solid #333333;
+            border-radius: 12px;
+            padding: 50px 40px;
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .profile-image {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #444444;
+            margin-bottom: 25px;
+        }
+
+        .profile-placeholder {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background-color: #333333;
+            border: 3px solid #444444;
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: #666666;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 25px;
+        }
+
+        .bio {
+            font-size: 1.1rem;
+            line-height: 2;
+            color: #999999;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .btn {
+            background-color: #333333;
+            color: #ffffff;
+            padding: 15px 40px;
+            border: 1px solid #444444;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Vazirmatn', sans-serif;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #3d3d3d;
+            border-color: #555555;
+        }
+
+        .form-box {
+            display: none;
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        .form-box.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #999999;
+            font-size: 0.9rem;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #555555;
+        }
+
+        .input-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #333333;
+            color: #ffffff;
+            border: 1px solid #444444;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        .submit-btn:hover {
+            background-color: #3d3d3d;
+        }
+
+        .success-msg {
+            display: none;
+            padding: 15px;
+            background-color: #1a3a1a;
+            border: 1px solid #2a4a2a;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #4a9a4a;
+        }
+
+        .success-msg.active {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .box {
+                padding: 35px 25px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <!-- روش ۱: با عکس واقعی -->
+        {% load static %}
+        <img src="{% static 'images/profile.jpg' %}" alt="عکس من" class="profile-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        
+        <!-- روش ۲: placeholder وقتی عکس نباشه -->
+        <div class="profile-placeholder" style="display: none;">👤</div>
+
+        <h1>سلاممم من بردیام!</h1>
+        
+        <div class="bio">
+            <br>
+            اقا عشق است... بالاخره سایتمو راه انداختم! خیلی قراره گسترشش بدم, مرسی از بازدیدتون! اگر پیامی دارید میتونید از گزینه زیر استفاده کنین حتما میبینم!
+        </div>
+
+        <button class="btn" onclick="toggleForm()">
+            📝 ارسال پیام به برارررت 
+        </button>
+
+        <div class="form-box" id="formBox">
+            <form id="msgForm">
+                {% csrf_token %}
+                <div class="input-group">
+                    <label>نام و نام خانوادگی:</label>
+                    <input type="text" name="name" placeholder="نام خود را وارد کنید" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>شماره تماس:</label>
+                    <input type="tel" name="phone" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>پیام:</label>
+                    <textarea name="message" placeholder="پیام خود را بنویسید..." required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">ارسال پیام</button>
+            </form>
+            
+            <div class="success-msg" id="successMsg">
+                ✅ پیام شما با موفقیت ارسال شد!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            document.getElementById('formBox').classList.toggle('active');
+        }
+
+        document.getElementById('msgForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('/send-message/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('successMsg').classList.add('active');
+                    this.reset();
+                    setTimeout(() => {
+                        document.getElementById('successMsg').classList.remove('active');
+                    }, 3000);
+                }
+            })
+            .catch(error => {
+                alert('خطا در ارسال پیام! لطفاً دوباره تلاش کنید.');
+            });
+        });
+    </script>
+</body>
+</html>
