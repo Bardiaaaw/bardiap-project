@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -182,8 +183,7 @@
 <body>
     <div class="box">
         <!-- روش ۱: با عکس واقعی -->
-        {% load static %}
-        <img src="{% static 'images/profile.jpg' %}" alt="عکس من" class="profile-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <img src="{% static 'images/profile.jpg' %}" alt="" class="profile-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         
         <!-- روش ۲: placeholder وقتی عکس نباشه -->
         <div class="profile-placeholder" style="display: none;">👤</div>
