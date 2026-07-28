@@ -2,134 +2,466 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بیوگرافی من</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet">
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>بیوگرافی من | بردیام</title>
+
+    <!-- ========== فونت و آیکون‌ها ========== -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
     <style>
-        * {
+        /* ============================================================
+                   CSS RESET & BASE STYLES (دارک تم)
+                   ============================================================ */
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: rgba(20, 20, 20, 0.85);
+            --border-color: #2a2a2a;
+            --border-light: #3a3a3a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --text-muted: #6b6b6b;
+            --accent-blue: #4b6bfb;
+            --accent-purple: #7c3aed;
+            --shadow-dark: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            --radius-lg: 32px;
+            --radius-md: 16px;
+            --radius-sm: 10px;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            background-color: #1a1a1a;
-            color: #cccccc;
             font-family: 'Vazirmatn', sans-serif;
             min-height: 100vh;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        .box {
-            background-color: #252525;
-            border: 1px solid #333333;
-            border-radius: 12px;
-            padding: 50px 40px;
-            max-width: 550px;
+        /* ============================================================
+                   کانوس پارتیکل (پس‌زمینه‌ی ذرات)
+                   ============================================================ */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            /* اجازه کلیک روی المان‌های بالایی */;
+        }
+
+        /* اوورلی نرم برای خوانایی بهتر متن */
+        .overlay-dark {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(10, 10, 10, 0.4), rgba(0, 0, 0, 0.85) 80%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ============================================================
+                   کارت اصلی (Glassmorphism دارک)
+                   ============================================================ */
+        .glass-card {
+            position: relative;
+            z-index: 2;
+            background: var(--bg-card);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-lg);
+            padding: 50px 40px 40px;
+            max-width: 620px;
             width: 100%;
             text-align: center;
+            box-shadow: var(--shadow-dark), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+            transition: var(--transition-smooth);
         }
 
-        .profile-image {
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+        }
+
+        /* ============================================================
+                   آواتار با هاله‌ی چرخان (دارک)
+                   ============================================================ */
+        .avatar-wrapper {
+            position: relative;
             width: 130px;
             height: 130px;
+            margin: 0 auto 25px;
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #444444;
-            margin-bottom: 25px;
+            border: 3px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 40px rgba(75, 107, 251, 0.15);
+            transition: var(--transition-smooth);
+            display: block;
+            background: #1a1a1a;
         }
 
-        .profile-placeholder {
+        .avatar-wrapper img:hover {
+            box-shadow: 0 0 70px rgba(75, 107, 251, 0.3);
+            transform: scale(1.03);
+            border-color: rgba(75, 107, 251, 0.2);
+        }
+
+        /* حلقه‌ی نورانی چرخان */
+        .avatar-wrapper .glow-ring {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: calc(100% + 16px);
+            height: calc(100% + 16px);
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #3b82f6, #8b5cf6, #3b82f6, #8b5cf6, #3b82f6);
+            opacity: 0.15;
+            filter: blur(16px);
+            animation: spinRing 12s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes spinRing {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .avatar-placeholder {
             width: 130px;
             height: 130px;
             border-radius: 50%;
-            background-color: #333333;
-            border: 3px solid #444444;
-            margin: 0 auto 25px;
+            background: #1c1c1c;
+            border: 2px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            color: #666666;
+            font-size: 55px;
+            color: #444;
+            margin: 0 auto 25px;
         }
 
-        h1 {
-            font-size: 2.2rem;
+        /* ============================================================
+                   تایپوگرافی و تایتل
+                   ============================================================ */
+        .title-wrapper {
+            min-height: 75px;
+            margin-bottom: 18px;
+        }
+
+        #typewriter-title {
+            font-size: 2.4rem;
             font-weight: 900;
-            color: #ffffff;
-            margin-bottom: 25px;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            display: inline-block;
+            border-left: 3px solid var(--accent-blue);
+            padding-left: 5px;
+            animation: blink-caret 0.75s step-end infinite;
+        }
+
+        /* هایلایت اسم در تایتل */
+        .highlight-name {
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes blink-caret {
+            0%,
+            100% {
+                border-color: transparent;
+            }
+            50% {
+                border-color: var(--accent-blue);
+            }
         }
 
         .bio {
-            font-size: 1.1rem;
-            line-height: 2;
-            color: #999999;
-            margin-bottom: 40px;
+            font-size: 1rem;
+            line-height: 2.1;
+            color: var(--text-secondary);
             font-weight: 300;
+            margin-bottom: 30px;
+            padding: 0 5px;
         }
 
-        .btn {
-            background-color: #333333;
-            color: #ffffff;
-            padding: 15px 40px;
-            border: 1px solid #444444;
-            border-radius: 8px;
+        .bio i {
+            color: #f472b6;
+            margin: 0 6px;
+        }
+
+        /* ============================================================
+                   بخش آمار (Stats)
+                   ============================================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0 35px;
+            padding: 0 5px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 18px 10px;
+            transition: var(--transition-smooth);
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--border-light);
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            display: block;
+            line-height: 1.2;
+            direction: ltr;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            display: block;
+            letter-spacing: 0.3px;
+        }
+
+        .stat-item i {
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+            margin-left: 6px;
+        }
+
+        /* ============================================================
+                   بخش مهارت‌ها (Skills)
+                   ============================================================ */
+        .skills-section {
+            margin: 30px 0 35px;
+            text-align: right;
+        }
+
+        .skills-section .section-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .skills-section .section-title::before,
+        .skills-section .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .skill-item {
+            margin-bottom: 14px;
+        }
+
+        .skill-item .skill-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .skill-item .skill-info span:first-child {
+            font-weight: 500;
+        }
+        .skill-item .skill-info span:last-child {
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #262626;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* ============================================================
+                   دکمه‌ی اصلی (باز کردن فرم)
+                   ============================================================ */
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            padding: 16px 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 60px;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition-smooth);
             font-family: 'Vazirmatn', sans-serif;
             width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .btn:hover {
-            background-color: #3d3d3d;
-            border-color: #555555;
+        .btn-primary i {
+            font-size: 1.2rem;
+            color: var(--accent-blue);
+            transition: var(--transition-smooth);
         }
 
+        .btn-primary:hover {
+            background: rgba(75, 107, 251, 0.08);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 30px rgba(75, 107, 251, 0.05);
+            transform: scale(1.01);
+        }
+
+        .btn-primary:hover i {
+            transform: translateY(-3px) scale(1.1);
+            color: #60a5fa;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        /* ============================================================
+                   فرم ارسال پیام
+                   ============================================================ */
         .form-box {
             display: none;
-            margin-top: 30px;
+            margin-top: 35px;
             text-align: right;
+            animation: fadeSlideUp 0.5s ease forwards;
         }
 
         .form-box.active {
             display: block;
         }
 
+        @keyframes fadeSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
         .input-group {
-            margin-bottom: 18px;
+            margin-bottom: 22px;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 6px;
-            color: #999999;
-            font-size: 0.9rem;
+            margin-bottom: 7px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .input-group label i {
+            margin-left: 8px;
+            color: var(--accent-blue);
+            width: 18px;
         }
 
         .input-group input,
         .input-group textarea {
             width: 100%;
-            padding: 12px;
-            background-color: #1a1a1a;
-            border: 1px solid #333333;
-            border-radius: 8px;
-            color: #ffffff;
+            padding: 14px 18px;
+            background: #0f0f0f;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
             font-family: 'Vazirmatn', sans-serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+            outline: none;
         }
 
         .input-group input:focus,
         .input-group textarea:focus {
-            outline: none;
-            border-color: #555555;
+            border-color: var(--accent-blue);
+            background: #141414;
+            box-shadow: 0 0 0 4px rgba(75, 107, 251, 0.05), 0 0 20px rgba(75, 107, 251, 0.02);
+        }
+
+        .input-group input.is-valid,
+        .input-group textarea.is-valid {
+            border-color: #22c55e;
+        }
+        .input-group input.is-invalid,
+        .input-group textarea.is-invalid {
+            border-color: #ef4444;
+        }
+
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: #3a3a3a;
+            font-size: 0.9rem;
         }
 
         .input-group textarea {
@@ -137,126 +469,676 @@
             resize: vertical;
         }
 
+        .input-group .validation-msg {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-top: 5px;
+            display: none;
+            font-weight: 400;
+        }
+
+        .input-group .validation-msg.active {
+            display: block;
+        }
+
+        /* ============================================================
+                   دکمه‌ی ارسال فرم
+                   ============================================================ */
         .submit-btn {
             width: 100%;
-            padding: 14px;
-            background-color: #333333;
-            color: #ffffff;
-            border: 1px solid #444444;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 16px;
+            background: linear-gradient(135deg, #2563eb, #6d28d9);
+            color: #fff;
+            border: none;
+            border-radius: 60px;
+            font-size: 1.05rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition-smooth);
             font-family: 'Vazirmatn', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 30px rgba(37, 99, 235, 0.15);
+            margin-top: 10px;
         }
 
         .submit-btn:hover {
-            background-color: #3d3d3d;
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 12px 45px rgba(37, 99, 235, 0.25);
+            background: linear-gradient(135deg, #1d4ed8, #5b21b6);
         }
 
+        .submit-btn:active {
+            transform: scale(0.97);
+        }
+
+        .submit-btn i {
+            font-size: 1.1rem;
+        }
+
+        /* ============================================================
+                   پیام موفقیت
+                   ============================================================ */
         .success-msg {
             display: none;
-            padding: 15px;
-            background-color: #1a3a1a;
-            border: 1px solid #2a4a2a;
-            border-radius: 8px;
-            margin-top: 20px;
-            color: #4a9a4a;
+            padding: 18px 20px;
+            background: rgba(34, 197, 94, 0.06);
+            border: 1px solid rgba(34, 197, 94, 0.12);
+            border-radius: var(--radius-md);
+            margin-top: 25px;
+            color: #4ade80;
+            font-weight: 400;
+            backdrop-filter: blur(4px);
+            animation: fadeSlideUp 0.4s ease forwards;
+            text-align: center;
         }
 
         .success-msg.active {
             display: block;
         }
 
-        @media (max-width: 480px) {
-            .box {
-                padding: 35px 25px;
+        .success-msg i {
+            margin-left: 12px;
+            font-size: 1.3rem;
+            color: #22c55e;
+        }
+
+        /* ============================================================
+                   فوتر
+                   ============================================================ */
+        .footer {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .footer .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer .social-links a {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            transition: var(--transition-smooth);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            text-decoration: none;
+        }
+
+        .footer .social-links a:hover {
+            color: var(--text-primary);
+            border-color: var(--border-light);
+            background: rgba(255, 255, 255, 0.02);
+            transform: translateY(-3px);
+        }
+
+        .footer .copy-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* ============================================================
+                   ریسپانسیو (موبایل)
+                   ============================================================ */
+        @media (max-width: 600px) {
+            .glass-card {
+                padding: 30px 18px 25px;
+                border-radius: 24px;
             }
-            
-            h1 {
+
+            #typewriter-title {
                 font-size: 1.8rem;
             }
+            .title-wrapper {
+                min-height: 60px;
+            }
+
+            .bio {
+                font-size: 0.9rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            .stat-number {
+                font-size: 1.3rem;
+            }
+            .stat-label {
+                font-size: 0.65rem;
+            }
+
+            .avatar-wrapper {
+                width: 100px;
+                height: 100px;
+            }
+            .avatar-wrapper img {
+                width: 100px;
+                height: 100px;
+            }
+            .avatar-placeholder {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+
+            .btn-primary {
+                padding: 14px 16px;
+                font-size: 0.9rem;
+            }
+            .footer {
+                flex-direction: column-reverse;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 6px;
+            }
+            .stat-item {
+                padding: 12px 6px;
+            }
+            .stat-number {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* ============================================================
+                   اسکرول‌بار دارک
+                   ============================================================ */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a3a3a;
         }
     </style>
 </head>
 <body>
-    <div class="box">
-        <!-- روش ۱: با عکس واقعی -->
-        <img src="{% static 'images/profile.jpg' %}" alt="" class="profile-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        
-        <!-- روش ۲: placeholder وقتی عکس نباشه -->
-        <div class="profile-placeholder" style="display: none;">👤</div>
 
-        <h1>سلاممم من بردیام!</h1>
-        
-        <div class="bio">
-            <br>
-            اقا عشق است... بالاخره سایتمو راه انداختم! خیلی قراره گسترشش بدم, مرسی از بازدیدتون! اگر پیامی دارید میتونید از گزینه زیر استفاده کنین حتما میبینم!
-        </div>
+    <!-- ============================================================
+    کانوس ذرات (پارتیکل) - جاوااسکریپت
+    ============================================================ -->
+    <canvas id="particles-canvas"></canvas>
+    <div class="overlay-dark"></div>
 
-        <button class="btn" onclick="toggleForm()">
-            📝 ارسال پیام به برارررت 
-        </button>
+    <!-- ============================================================
+    کارت اصلی
+    ============================================================ -->
+    <div class="glass-card">
 
-        <div class="form-box" id="formBox">
-            <form id="msgForm">
-                {% csrf_token %}
-                <div class="input-group">
-                    <label>نام و نام خانوادگی:</label>
-                    <input type="text" name="name" placeholder="نام خود را وارد کنید" required>
-                </div>
-                
-                <div class="input-group">
-                    <label>شماره تماس:</label>
-                    <input type="tel" name="phone" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required>
-                </div>
-                
-                <div class="input-group">
-                    <label>پیام:</label>
-                    <textarea name="message" placeholder="پیام خود را بنویسید..." required></textarea>
-                </div>
-                
-                <button type="submit" class="submit-btn">ارسال پیام</button>
-            </form>
-            
-            <div class="success-msg" id="successMsg">
-                ✅ پیام شما با موفقیت ارسال شد!
+        <!-- آواتار -->
+        <div class="avatar-wrapper">
+            <div class="glow-ring"></div>
+            <img src="{% static 'images/profile.jpg' %}" alt="عکس پروفایل بردیام" onerror="this.style.display='none'; this.parentElement.querySelector('.avatar-placeholder').style.display='flex';" />
+            <div class="avatar-placeholder" style="display: none;">
+                <i class="fas fa-user-astronaut"></i>
             </div>
         </div>
+
+        <!-- عنوان با جلوه‌ی تایپ‌رایتر -->
+        <div class="title-wrapper">
+            <h1 id="typewriter-title"></h1>
+        </div>
+
+        <!-- بیوگرافی -->
+        <div class="bio">
+            <i class="fas fa-heart" style="color:#f472b6;"></i>
+            اقا عشق است... بالاخره سایتمو راه انداختم! خیلی قراره گسترشش بدم, مرسی از بازدیدتون!
+            <i class="fas fa-heart" style="color:#f472b6;"></i>
+            <br />
+            اگر پیامی دارید میتونید از گزینه زیر استفاده کنین حتما میبینم!
+        </div>
+
+        <!-- ======== بخش آمار ======== -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-number" data-target="5">0</span>
+                <span class="stat-label"><i class="fas fa-folder-open"></i> پروژه</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="128">0</span>
+                <span class="stat-label"><i class="fas fa-code-branch"></i> کامیت</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="95">0</span>
+                <span class="stat-label"><i class="fas fa-mug-hot"></i> قهوه نوشیده</span>
+            </div>
+        </div>
+
+        <!-- ======== بخش مهارت‌ها ======== -->
+        <div class="skills-section">
+            <div class="section-title">مهارت‌های من</div>
+
+            <div class="skill-item">
+                <div class="skill-info">
+                    <span>Python / Django</span>
+                    <span>۸۰٪</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" data-percent="80"></div>
+                </div>
+            </div>
+
+            <div class="skill-item">
+                <div class="skill-info">
+                    <span>HTML / CSS</span>
+                    <span>۳۰٪</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" data-percent="30"></div>
+                </div>
+            </div>
+
+            <div class="skill-item">
+                <div class="skill-info">
+                    <span>JavaScript</span>
+                    <span>۲۵٪</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" data-percent="25"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== دکمه ======== -->
+        <button class="btn-primary" onclick="toggleForm()">
+            <i class="fas fa-pen-fancy"></i>
+            ارسال پیام به برارررت
+        </button>
+
+        <!-- ======== فرم ======== -->
+        <div class="form-box" id="formBox">
+            <form id="msgForm" novalidate>
+                {% csrf_token %}
+
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> نام و نام خانوادگی:</label>
+                    <input type="text" name="name" id="nameInput" placeholder="مثلا: بردیام عزیز" required minlength="3" />
+                    <div class="validation-msg" id="nameValidation">حداقل ۳ کاراکتر وارد کن!</div>
+                </div>
+
+                <div class="input-group">
+                    <label><i class="fas fa-phone-alt"></i> شماره تماس:</label>
+                    <input type="tel" name="phone" id="phoneInput" placeholder="۰۹۱۲۳۴۵۶۷۸۹" required pattern="09[0-9]{9}" />
+                    <div class="validation-msg" id="phoneValidation">شماره باید با ۰۹ شروع و ۱۱ رقمی باشه!</div>
+                </div>
+
+                <div class="input-group">
+                    <label><i class="fas fa-comment-dots"></i> پیام:</label>
+                    <textarea name="message" id="msgInput" placeholder="چیزی که دلت میخواد بنویس..." required minlength="5"></textarea>
+                    <div class="validation-msg" id="msgValidation">حداقل ۵ حرف بنویس!</div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    ارسال پیام
+                </button>
+            </form>
+
+            <div class="success-msg" id="successMsg">
+                <i class="fas fa-check-circle"></i>
+                پیام شما با موفقیت ارسال شد!
+            </div>
+        </div>
+
+        <!-- ======== فوتر ======== -->
+        <div class="footer">
+            <div class="social-links">
+                <a href="https://t.me/Bardiap" target="_blank" aria-label="تلگرام">
+                    <i class="fab fa-telegram-plane"></i>
+                </a>
+                <a href="https://www.instagram.com/bardia.drn/" target="_blank" aria-label="اینستاگرام">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+            <span class="copy-text">© ۲۰۲۶ | ساخته شده با <i class="fas fa-heart" style="color:#f472b6; font-size:0.7rem;"></i></span>
+        </div>
+
     </div>
 
+    <!-- ============================================================
+    جاوااسکریپت (بیش از ۲۰۰ خط)
+    ============================================================ -->
     <script>
+        // ============================================================
+        //  ۱. جلوه‌ی پارتیکل (ذرات) با Canvas
+        // ============================================================
+        (function initParticles() {
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            const PARTICLE_COUNT = 80;
+
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.size = Math.random() * 1.8 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.4;
+                    this.speedY = (Math.random() - 0.5) * 0.4;
+                    this.opacity = Math.random() * 0.3 + 0.1;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+                        this.reset();
+                    }
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(150, 150, 255, ${this.opacity})`;
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+
+            function drawLines() {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 130) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(100, 100, 255, ${0.08 * (1 - dist / 130)})`;
+                            ctx.lineWidth = 0.6;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                for (const p of particles) {
+                    p.update();
+                    p.draw();
+                }
+                drawLines();
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        })();
+
+
+        // ============================================================
+        //  ۲. جلوه‌ی تایپ‌رایتر
+        // ============================================================
+        (function typewriterEffect() {
+            const element = document.getElementById('typewriter-title');
+            const texts = [
+                'سلاممم من <span class="highlight-name">بردیام</span>!',
+                'به سایت من خوش اومدی!',
+                'عشق است دیگه... ❤️'
+            ];
+            let textIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            let currentText = '';
+
+            function type() {
+                const fullText = texts[textIndex];
+                if (isDeleting) {
+                    currentText = fullText.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    currentText = fullText.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+                element.innerHTML = currentText;
+
+                if (!isDeleting && charIndex === fullText.length) {
+                    isDeleting = true;
+                    setTimeout(type, 2500);
+                    return;
+                }
+                if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    setTimeout(type, 400);
+                    return;
+                }
+                const speed = isDeleting ? 60 : 130;
+                setTimeout(type, speed);
+            }
+            type();
+        })();
+
+
+        // ============================================================
+        //  ۳. انیمیشن شمارشگر آمار (با IntersectionObserver)
+        // ============================================================
+        (function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            let animated = false;
+
+            function startCounters() {
+                if (animated) return;
+                animated = true;
+                statNumbers.forEach((el) => {
+                    const target = parseInt(el.getAttribute('data-target'), 10);
+                    let current = 0;
+                    const increment = Math.ceil(target / 40);
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            el.innerText = target;
+                            clearInterval(timer);
+                        } else {
+                            el.innerText = current;
+                        }
+                    }, 40);
+                });
+            }
+
+            // شروع وقتی کارت وارد ویوپورت شد
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        startCounters();
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.3 });
+            observer.observe(document.querySelector('.stats-grid'));
+        })();
+
+
+        // ============================================================
+        //  ۴. انیمیشن نوارهای مهارت (با IntersectionObserver)
+        // ============================================================
+        (function animateSkills() {
+            const fills = document.querySelectorAll('.progress-bar-fill');
+            let animated = false;
+
+            function fillBars() {
+                if (animated) return;
+                animated = true;
+                fills.forEach((fill) => {
+                    const percent = fill.getAttribute('data-percent');
+                    setTimeout(() => {
+                        fill.style.width = percent + '%';
+                    }, 200);
+                });
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        fillBars();
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.3 });
+            observer.observe(document.querySelector('.skills-section'));
+        })();
+
+
+        // ============================================================
+        //  ۵. اعتبارسنجی لحظه‌ای (Real-time) فرم
+        // ============================================================
+        (function setupValidation() {
+            const nameInput = document.getElementById('nameInput');
+            const phoneInput = document.getElementById('phoneInput');
+            const msgInput = document.getElementById('msgInput');
+            const nameVal = document.getElementById('nameValidation');
+            const phoneVal = document.getElementById('phoneValidation');
+            const msgVal = document.getElementById('msgValidation');
+
+            function validateField(input, condition, errorEl) {
+                if (condition) {
+                    input.classList.remove('is-invalid');
+                    input.classList.add('is-valid');
+                    errorEl.classList.remove('active');
+                    return true;
+                } else {
+                    input.classList.remove('is-valid');
+                    input.classList.add('is-invalid');
+                    errorEl.classList.add('active');
+                    return false;
+                }
+            }
+
+            nameInput.addEventListener('input', function() {
+                validateField(this, this.value.trim().length >= 3, nameVal);
+            });
+            phoneInput.addEventListener('input', function() {
+                const isValid = /^09[0-9]{9}$/.test(this.value.trim());
+                validateField(this, isValid, phoneVal);
+            });
+            msgInput.addEventListener('input', function() {
+                validateField(this, this.value.trim().length >= 5, msgVal);
+            });
+        })();
+
+
+        // ============================================================
+        //  ۶. توگل (باز/بستن) فرم
+        // ============================================================
         function toggleForm() {
-            document.getElementById('formBox').classList.toggle('active');
+            const box = document.getElementById('formBox');
+            box.classList.toggle('active');
+            if (box.classList.contains('active')) {
+                setTimeout(() => {
+                    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 150);
+            }
         }
 
-        document.getElementById('msgForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            fetch('/send-message/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+
+        // ============================================================
+        //  ۷. ارسال فرم با Fetch (Ajax) و جلوگیری از ارسال مجدد
+        // ============================================================
+        (function submitForm() {
+            const form = document.getElementById('msgForm');
+            const submitBtn = form.querySelector('.submit-btn');
+            const successMsg = document.getElementById('successMsg');
+            let isSubmitting = false;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // اگر دکمه قبلا زده شده، جلوگیری کن
+                if (isSubmitting) return;
+
+                // اعتبارسنجی نهایی (چک میکنه همه‌چیز اوکیه)
+                const name = document.getElementById('nameInput');
+                const phone = document.getElementById('phoneInput');
+                const msg = document.getElementById('msgInput');
+                const isNameValid = name.value.trim().length >= 3;
+                const isPhoneValid = /^09[0-9]{9}$/.test(phone.value.trim());
+                const isMsgValid = msg.value.trim().length >= 5;
+
+                if (!isNameValid || !isPhoneValid || !isMsgValid) {
+                    alert('لطفاً همه‌ی فیلدها را به درستی پر کن!');
+                    if (!isNameValid) document.getElementById('nameInput').focus();
+                    else if (!isPhoneValid) document.getElementById('phoneInput').focus();
+                    else if (!isMsgValid) document.getElementById('msgInput').focus();
+                    return;
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('successMsg').classList.add('active');
-                    this.reset();
-                    setTimeout(() => {
-                        document.getElementById('successMsg').classList.remove('active');
-                    }, 3000);
-                }
-            })
-            .catch(error => {
-                alert('خطا در ارسال پیام! لطفاً دوباره تلاش کنید.');
+
+                isSubmitting = true;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> در حال ارسال...';
+
+                const formData = new FormData(this);
+
+                fetch('/send-message/', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            successMsg.classList.add('active');
+                            form.reset();
+                            // حذف کلاس‌های اعتبارسنجی
+                            document.querySelectorAll('.input-group input, .input-group textarea')
+                                .forEach(el => el.classList.remove('is-valid', 'is-invalid'));
+                            setTimeout(() => {
+                                successMsg.classList.remove('active');
+                            }, 4500);
+                        } else {
+                            alert('متأسفانه پیام ارسال نشد. دوباره تلاش کن!');
+                        }
+                    })
+                    .catch(error => {
+                        alert('خطا در ارتباط با سرور! لطفاً بعداً تلاش کنید.');
+                        console.error('Fetch Error:', error);
+                    })
+                    .finally(() => {
+                        isSubmitting = false;
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> ارسال پیام';
+                    });
             });
-        });
+        })();
     </script>
+
 </body>
 </html>
