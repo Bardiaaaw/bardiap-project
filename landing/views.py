@@ -32,13 +32,3 @@ def send_message(request):
     
     return JsonResponse({'success': False, 'message': 'متد اشتباه'})
 
-from django.contrib.auth.models import User
-from django.http import HttpResponse
-
-def create_admin(request):
-    User.objects.create_superuser(
-        username='admin',
-        email='admin@gmail.com',
-        password='1231212bar'
-    )
-    return HttpResponse("created")
